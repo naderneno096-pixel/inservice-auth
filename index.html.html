@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>In Service | استعادة كلمة المرور</title>
+<style>
+body{font-family:Tahoma,Arial,sans-serif;background:#f4f7fa;color:#172638;margin:0;padding:30px 14px}main{max-width:480px;margin:40px auto;background:white;padding:28px;border-radius:16px;box-shadow:0 8px 35px #18334a15}h1{font-size:24px}label{display:block;margin-top:18px;font-weight:bold}input,button{box-sizing:border-box;width:100%;padding:13px;border-radius:9px;font-size:15px}input{border:1px solid #bdc8d2;margin-top:7px;direction:ltr;text-align:left}button{margin-top:15px;background:#1566aa;color:white;border:0;cursor:pointer}button:disabled{opacity:.6;cursor:wait}p{line-height:1.7}small{color:#52677b}#status{white-space:pre-wrap;background:#eef4f8;border-radius:8px;padding:12px;margin-top:20px;display:none}#reset{display:none}#request{display:block}
+</style>
+</head>
+<body><main>
+<h1>In Service — استعادة كلمة المرور</h1>
+<p>استعادة كلمة مرور حسابك الحالي في Supabase، بدون إنشاء حساب جديد.</p>
+<label for="key">مفتاح Supabase العام (Publishable أو anon)</label>
+<input id="key" type="password" autocomplete="off" placeholder="sb_publishable_... أو eyJ...">
+<small>لا تدخل أبدًا Secret key أو service_role. المفتاح العام يُستخدم داخل المتصفح فقط ولا يُحفظ في الموقع.</small>
+<section id="request">
+<label for="email">البريد الإلكتروني لحساب المالك</label>
+<input id="email" type="email" autocomplete="email" placeholder="name@example.com">
+<button id="send">إرسال رابط استعادة كلمة المرور</button>
+</section>
+<section id="reset">
+<p>تم فتح رابط الاستعادة. أدخل كلمة مرور جديدة لحسابك.</p>
+<label for="password">كلمة المرور الجديدة</label>
+<input id="password" type="password" autocomplete="new-password" minlength="12" placeholder="12 حرفًا على الأقل">
+<label for="confirm">تأكيد كلمة المرور</label>
+<input id="confirm" type="password" autocomplete="new-password">
+<button id="update">حفظ كلمة المرور الجديدة</button>
+</section>
+<div id="status" role="status" aria-live="polite"></div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const URL='https://uxuvzpeuacrmhggbafly.supabase.co';
+const REDIRECT='https://naderneno096-pixel.github.io/inservice-auth/';
+const $=id=>document.getElementById(id);
+let client=null;
+function status(message){$('status').style.display='block';$('status').textContent=message;}
+function getClient(){
+  const key=$('key').value.trim();
+  if(!key)throw new Error('أدخل مفتاح Supabase العام أولًا.');
+  if(!window.supabase)throw new Error('تعذّر تحميل مكتبة Supabase. تحقق من اتصال الإنترنت.');
+  if(!client)client=window.supabase.createClient(URL,key,{auth:{detectSessionInUrl:true,persistSession:false,autoRefreshToken:false}});
+  return client;
+}
+const hasRecoveryLink=location.hash.includes('type=recovery')||new URLSearchParams(location.search).has('code');
+if(hasRecoveryLink){$('request').style.display='none';$('reset').style.display='block';status('أدخل المفتاح العام ثم انتظر التحقق من جلسة الاستعادة.');}
+$('send').addEventListener('click',async()=>{
+  const btn=$('send');btn.disabled=true;
+  try{
+    const email=$('email').value.trim();if(!email)throw new Error('أدخل البريد الإلكتروني.');
+    const {error}=await getClient().auth.resetPasswordForEmail(email,{redirectTo:REDIRECT});
+    if(error)throw error;
+    status('لو البريد مسجلًا ومسموحًا بإرسال الرسائل، ستصلك رسالة استعادة. افتح أحدث رابط من بريدك.');
+  }catch(e){status('تعذر إرسال الطلب: '+e.message);}finally{btn.disabled=false;}
+});
+$('update').addEventListener('click',async()=>{
+ const btn=$('update');btn.disabled=true;
+ try{
+   const password=$('password').value, confirm=$('confirm').value;
+   if(password.length<12)throw new Error('استخدم كلمة مرور من 12 حرفًا على الأقل.');
+   if(password!==confirm)throw new Error('كلمتا المرور غير متطابقتين.');
+   const c=getClient();
+   const {data:{session},error:sessionError}=await c.auth.getSession();
+   if(sessionError||!session)throw new Error('رابط الاستعادة غير صالح أو انتهت صلاحيته. اطلب رابطًا جديدًا.');
+   const {error}=await c.auth.updateUser({password});if(error)throw error;
+   await c.auth.signOut();
+   status('تم تغيير كلمة المرور بنجاح. يمكنك الآن تجربة تسجيل الدخول بكلمة المرور الجديدة.');
+   $('reset').style.display='none';
+ }catch(e){status('تعذر تغيير كلمة المرور: '+e.message);}finally{btn.disabled=false;}
+});
+// If the page was opened with a recovery link, Supabase will process it when initialized.
+$('key').addEventListener('change',async()=>{
+ if(!hasRecoveryLink)return;
+ try{
+  const c=getClient();
+  const {data:{session},error}=await c.auth.getSession();
+  if(error)throw error;
+  status(session?'تم التحقق من رابط الاستعادة. أدخل كلمة المرور الجديدة.':'لم تُنشأ جلسة بعد. انتظر لحظات أو افتح رابط استعادة جديدًا.');
+ }catch(e){status('تعذر التحقق: '+e.message);}
+});
+</script>
+</body></html>
