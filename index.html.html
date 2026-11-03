@@ -1,82 +1,33 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>In Service | استعادة كلمة المرور</title>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>In Service | إدارة الفروع</title>
 <style>
-body{font-family:Tahoma,Arial,sans-serif;background:#f4f7fa;color:#172638;margin:0;padding:30px 14px}main{max-width:480px;margin:40px auto;background:white;padding:28px;border-radius:16px;box-shadow:0 8px 35px #18334a15}h1{font-size:24px}label{display:block;margin-top:18px;font-weight:bold}input,button{box-sizing:border-box;width:100%;padding:13px;border-radius:9px;font-size:15px}input{border:1px solid #bdc8d2;margin-top:7px;direction:ltr;text-align:left}button{margin-top:15px;background:#1566aa;color:white;border:0;cursor:pointer}button:disabled{opacity:.6;cursor:wait}p{line-height:1.7}small{color:#52677b}#status{white-space:pre-wrap;background:#eef4f8;border-radius:8px;padding:12px;margin-top:20px;display:none}#reset{display:none}#request{display:block}
-</style>
-</head>
-<body><main>
-<h1>In Service — استعادة كلمة المرور</h1>
-<p>استعادة كلمة مرور حسابك الحالي في Supabase، بدون إنشاء حساب جديد.</p>
-<label for="key">مفتاح Supabase العام (Publishable أو anon)</label>
-<input id="key" type="password" autocomplete="off" placeholder="sb_publishable_... أو eyJ...">
-<small>لا تدخل أبدًا Secret key أو service_role. المفتاح العام يُستخدم داخل المتصفح فقط ولا يُحفظ في الموقع.</small>
-<section id="request">
-<label for="email">البريد الإلكتروني لحساب المالك</label>
-<input id="email" type="email" autocomplete="email" placeholder="name@example.com">
-<button id="send">إرسال رابط استعادة كلمة المرور</button>
-</section>
-<section id="reset">
-<p>تم فتح رابط الاستعادة. أدخل كلمة مرور جديدة لحسابك.</p>
-<label for="password">كلمة المرور الجديدة</label>
-<input id="password" type="password" autocomplete="new-password" minlength="12" placeholder="12 حرفًا على الأقل">
-<label for="confirm">تأكيد كلمة المرور</label>
-<input id="confirm" type="password" autocomplete="new-password">
-<button id="update">حفظ كلمة المرور الجديدة</button>
-</section>
-<div id="status" role="status" aria-live="polite"></div>
+:root{font-family:Tahoma,Arial,sans-serif;color:#17212f;background:#f5f6f8}*{box-sizing:border-box}body{margin:0}.wrap{max-width:1080px;margin:auto;padding:24px}.top{background:#141a24;color:white;padding:18px 24px;border-bottom:5px solid #f5c400}.topin{max-width:1080px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:800;font-size:21px}.brand span{color:#ffd000}.panel{background:white;border:1px solid #e2e5eb;border-radius:16px;padding:24px;margin-top:22px;box-shadow:0 6px 24px #17212f0a}.muted{color:#667085;font-size:14px}.form{display:grid;gap:13px;max-width:560px}label{display:grid;gap:6px;font-size:14px;font-weight:700}input{font:inherit;border:1px solid #cbd2de;border-radius:9px;padding:12px;min-width:0;width:100%}input:focus{outline:2px solid #f5c400}button{font:inherit;cursor:pointer;border:0;border-radius:9px;padding:11px 17px;background:#f5c400;color:#151515;font-weight:700}button.secondary{background:#e9edf2}button.danger{background:#fff1f1;color:#ad1c1c}button:disabled{opacity:.55;cursor:wait}.actions{display:flex;gap:8px;flex-wrap:wrap}.hide{display:none!important}.notice{padding:12px;border-radius:9px;background:#edf5ff;margin:12px 0;white-space:pre-wrap}.notice.error{background:#fff0f0;color:#a51d1d}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px;margin:16px 0}.branch{border:1px solid #e0e4ea;border-radius:12px;padding:17px}.branch h3{margin:0 0 8px}.pill{display:inline-block;border-radius:30px;padding:5px 10px;font-size:12px;background:#e7f8eb;color:#176b32}.pill.off{background:#f0f0f0;color:#666}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.note{border-right:4px solid #f5c400;padding:12px;background:#fffbea;font-size:13px}.modalback{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:15px}.modal{background:white;padding:24px;border-radius:15px;width:min(100%,480px)}.modal h2{margin-top:0}@media(max-width:600px){.wrap{padding:14px}.panel{padding:16px}.top{padding:15px}}
+</style></head><body>
+<header class="top"><div class="topin"><div class="brand">IN<span>SERVICE</span> <small>Operations</small></div><button id="logout" class="secondary hide">تسجيل الخروج</button></div></header>
+<main class="wrap">
+<section id="loginPanel" class="panel"><h1>تسجيل دخول المالك</h1><p class="muted">لوحة إدارة الفروع متصلة بقاعدة بيانات In Service الحالية.</p><form id="loginForm" class="form"><label>Supabase Publishable / anon key<input id="key" type="password" autocomplete="off" required placeholder="المفتاح العام فقط"></label><label>البريد الإلكتروني<input id="email" type="email" autocomplete="username" required></label><label>كلمة المرور<input id="password" type="password" autocomplete="current-password" required></label><button id="loginBtn" type="submit">تسجيل الدخول</button></form><p class="note">استخدم مفتاح Publishable أو anon العام فقط. ممنوع إدخال Secret أو service_role. كلمة المرور لا تُحفظ في الصفحة.</p></section>
+<section id="dashboard" class="hide"><div class="panel"><div class="row"><div><h1>إدارة الفروع</h1><p class="muted" id="who"></p></div><button id="addBtn">+ إضافة فرع</button></div><div id="branches" class="grid"></div><button id="refresh" class="secondary">تحديث الفروع</button></div></section>
+<div id="status" role="status" aria-live="polite" class="notice hide"></div>
 </main>
+<div id="modalback" class="modalback hide"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="formTitle"><h2 id="formTitle">فرع</h2><form id="branchForm" class="form"><label>اسم الفرع<input id="branchName" maxlength="100" required></label><label>كود الفرع (إنجليزي)<input id="branchCode" maxlength="40" pattern="[a-zA-Z0-9_-]+" required></label><label style="display:flex;align-items:center;gap:10px"><input id="branchActive" type="checkbox" style="width:auto" checked> فرع نشط</label><div class="actions"><button type="submit" id="saveBtn">حفظ</button><button type="button" class="secondary" id="cancelBtn">إلغاء</button></div></form></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-const URL='https://uxuvzpeuacrmhggbafly.supabase.co';
-const REDIRECT='https://naderneno096-pixel.github.io/inservice-auth/';
-const $=id=>document.getElementById(id);
-let client=null;
-function status(message){$('status').style.display='block';$('status').textContent=message;}
-function getClient(){
-  const key=$('key').value.trim();
-  if(!key)throw new Error('أدخل مفتاح Supabase العام أولًا.');
-  if(!window.supabase)throw new Error('تعذّر تحميل مكتبة Supabase. تحقق من اتصال الإنترنت.');
-  if(!client)client=window.supabase.createClient(URL,key,{auth:{detectSessionInUrl:true,persistSession:false,autoRefreshToken:false}});
-  return client;
-}
-const hasRecoveryLink=location.hash.includes('type=recovery')||new URLSearchParams(location.search).has('code');
-if(hasRecoveryLink){$('request').style.display='none';$('reset').style.display='block';status('أدخل المفتاح العام ثم انتظر التحقق من جلسة الاستعادة.');}
-$('send').addEventListener('click',async()=>{
-  const btn=$('send');btn.disabled=true;
-  try{
-    const email=$('email').value.trim();if(!email)throw new Error('أدخل البريد الإلكتروني.');
-    const {error}=await getClient().auth.resetPasswordForEmail(email,{redirectTo:REDIRECT});
-    if(error)throw error;
-    status('لو البريد مسجلًا ومسموحًا بإرسال الرسائل، ستصلك رسالة استعادة. افتح أحدث رابط من بريدك.');
-  }catch(e){status('تعذر إرسال الطلب: '+e.message);}finally{btn.disabled=false;}
-});
-$('update').addEventListener('click',async()=>{
- const btn=$('update');btn.disabled=true;
- try{
-   const password=$('password').value, confirm=$('confirm').value;
-   if(password.length<12)throw new Error('استخدم كلمة مرور من 12 حرفًا على الأقل.');
-   if(password!==confirm)throw new Error('كلمتا المرور غير متطابقتين.');
-   const c=getClient();
-   const {data:{session},error:sessionError}=await c.auth.getSession();
-   if(sessionError||!session)throw new Error('رابط الاستعادة غير صالح أو انتهت صلاحيته. اطلب رابطًا جديدًا.');
-   const {error}=await c.auth.updateUser({password});if(error)throw error;
-   await c.auth.signOut();
-   status('تم تغيير كلمة المرور بنجاح. يمكنك الآن تجربة تسجيل الدخول بكلمة المرور الجديدة.');
-   $('reset').style.display='none';
- }catch(e){status('تعذر تغيير كلمة المرور: '+e.message);}finally{btn.disabled=false;}
-});
-// If the page was opened with a recovery link, Supabase will process it when initialized.
-$('key').addEventListener('change',async()=>{
- if(!hasRecoveryLink)return;
- try{
-  const c=getClient();
-  const {data:{session},error}=await c.auth.getSession();
-  if(error)throw error;
-  status(session?'تم التحقق من رابط الاستعادة. أدخل كلمة المرور الجديدة.':'لم تُنشأ جلسة بعد. انتظر لحظات أو افتح رابط استعادة جديدًا.');
- }catch(e){status('تعذر التحقق: '+e.message);}
-});
-</script>
-</body></html>
+(()=>{'use strict';
+const PROJECT='https://uxuvzpeuacrmhggbafly.supabase.co';let client=null,editId=null,items=[];
+const $=id=>document.getElementById(id);const show=(id,yes)=>$(id).classList.toggle('hide',!yes);
+function notice(message,error=false){$('status').textContent=message;show('status',!!message);$('status').classList.toggle('error',error)}
+function busy(id,on){$(id).disabled=on}
+function err(e){return e?.message||String(e)}
+function makeClient(){const key=$('key').value.trim();if(!key)throw Error('أدخل المفتاح العام');if(!window.supabase?.createClient)throw Error('تعذر تحميل مكتبة Supabase. تحقق من الإنترنت.');client=window.supabase.createClient(PROJECT,key,{auth:{persistSession:false,autoRefreshToken:true,detectSessionInUrl:false}})}
+async function ownerOnly(){const {data,error}=await client.rpc('is_owner');if(error)throw error;if(data!==true)throw Error('الحساب الحالي ليس لديه صلاحية Owner نشطة.');}
+async function login(ev){ev.preventDefault();busy('loginBtn',true);notice('جاري تسجيل الدخول والتحقق من الصلاحية...');try{makeClient();const email=$('email').value.trim(),password=$('password').value;const {data,error}=await client.auth.signInWithPassword({email,password});$('password').value='';if(error)throw error;if(!data.user)throw Error('لم يتم إرجاع بيانات المستخدم');await ownerOnly();$('who').textContent='مالك النظام: '+data.user.email;show('loginPanel',false);show('dashboard',true);show('logout',true);notice('تم تسجيل الدخول بصلاحية Owner بنجاح');await load()}catch(e){$('password').value='';notice('تعذر الدخول: '+err(e),true);if(client){await client.auth.signOut().catch(()=>{});}}finally{busy('loginBtn',false)}}
+async function load(){notice('جاري تحميل الفروع...');const {data,error}=await client.from('branches').select('id,name_ar,code,is_active').order('name_ar');if(error){notice('فشل تحميل الفروع: '+err(error),true);return}items=data||[];render();notice('تم تحميل '+items.length+' فرع بنجاح')}
+function render(){const target=$('branches');target.replaceChildren();if(!items.length){const p=document.createElement('p');p.textContent='لا توجد فروع للعرض';target.append(p);return}for(const item of items){const card=document.createElement('article');card.className='branch';const h=document.createElement('h3');h.textContent=item.name_ar;const code=document.createElement('p');code.className='muted';code.textContent='الكود: '+item.code;const pill=document.createElement('span');pill.className='pill'+(item.is_active?'':' off');pill.textContent=item.is_active?'نشط':'غير نشط';const actions=document.createElement('div');actions.className='actions';actions.style.marginTop='15px';const edit=document.createElement('button');edit.textContent='تعديل';edit.className='secondary';edit.addEventListener('click',()=>openForm(item));const toggle=document.createElement('button');toggle.textContent=item.is_active?'إيقاف الفرع':'تفعيل الفرع';toggle.className='secondary';toggle.addEventListener('click',()=>toggleBranch(item));actions.append(edit,toggle);card.append(h,code,pill,actions);target.append(card)}}
+function openForm(item=null){editId=item?.id??null;$('formTitle').textContent=item?'تعديل الفرع':'إضافة فرع جديد';$('branchName').value=item?.name_ar??'';$('branchCode').value=item?.code??'';$('branchActive').checked=item?.is_active??true;show('modalback',true);$('branchName').focus()}
+function closeForm(){show('modalback',false);editId=null}
+async function save(ev){ev.preventDefault();busy('saveBtn',true);const row={name_ar:$('branchName').value.trim(),code:$('branchCode').value.trim(),is_active:$('branchActive').checked};try{if(!row.name_ar||!row.code)throw Error('الاسم والكود مطلوبان');let result;if(editId){result=await client.from('branches').update(row).eq('id',editId).select('id')}else{result=await client.from('branches').insert(row).select('id')}if(result.error)throw result.error;if(!result.data?.length)throw Error('لم يتم تعديل أي صف. تحقق من صلاحيات RLS.');closeForm();await load()}catch(e){notice('فشل الحفظ: '+err(e),true)}finally{busy('saveBtn',false)}}
+async function toggleBranch(item){const action=item.is_active?'إيقاف':'تفعيل';if(!confirm('هل تريد '+action+' فرع '+item.name_ar+'؟'))return;const {data,error}=await client.from('branches').update({is_active:!item.is_active}).eq('id',item.id).select('id');if(error||!data?.length){notice('تعذر تحديث الفرع: '+(error?err(error):'لم يتم تعديل أي صف'),true);return}await load()}
+async function logout(){if(client)await client.auth.signOut();client=null;items=[];$('password').value='';show('dashboard',false);show('logout',false);show('loginPanel',true);notice('تم تسجيل الخروج')}
+$('loginForm').addEventListener('submit',login);$('branchForm').addEventListener('submit',save);$('addBtn').addEventListener('click',()=>openForm());$('cancelBtn').addEventListener('click',closeForm);$('refresh').addEventListener('click',load);$('logout').addEventListener('click',logout);$('modalback').addEventListener('click',e=>{if(e.target===$('modalback'))closeForm()});
+})();
+</script></body></html>
